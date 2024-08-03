@@ -1011,6 +1011,17 @@ def makeBasket(width, height, tall, thickness = 0.1, bottom_thickness = 0.1, wra
         kwargs ( dict[str, param] ) : Extra keyword arguments passing to makeBox
 
     """
+    if thickness*2  > width or thickness*2 > height or bottom_thickness < tall:
+        print("Parameters do not match.")
+        if rawShape:
+            sg = cutil.SgGroup()
+            return sg
+        else:
+            sg = cutil.SgPosTransform()
+            ret = sg
+            if wrapped:
+                ret = coordsWrapper(sg, original_object=sg)
+            return ret
     wall0 = makeBox(width, thickness, tall, **kwargs).translate(npa([0,  height*0.5, tall*0.5]))
     wall1 = makeBox(width, thickness, tall, **kwargs).translate(npa([0, -height*0.5, tall*0.5]))
     wall2 = makeBox(thickness, height - thickness, tall, **kwargs).translate(npa([ 0.5*(width- thickness), 0, tall*0.5]))
