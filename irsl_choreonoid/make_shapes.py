@@ -997,31 +997,34 @@ def makeLineAlignedShape(start, end, size=0.001, shape='box', verbose=False, **k
         print('rot: {}'.format(rot))
     return obj
 
-def makeBasket(width, height, tall, thickness = 0.1, bottom_thickness = 0.1, wrapped=True, rawShape=False, **kwargs):
+def makeBasket(width, height, tall, thickness = None, bottom_thickness = None, wrapped=True, rawShape=False, **kwargs):
     """Making basket shape
 
     Args:
         width (float) : width of bottom plate (x-axis)
         height (float) : height of bottom plate (y-axis)
         tall (float) : tall of basket
-        thickness (float, default = 0.1): thickness of walls
-        bottom_thickness (float, default = 0.1): thickness of bottom plate
+        thickness (float, default = None): thickness of walls
+        bottom_thickness (float, default = None): thickness of bottom plate
         wrapped (boolean, default=True) : Just passing to makeBox
         rawShape(boolean, default=False) : Just passing to makeBox
         kwargs ( dict[str, param] ) : Extra keyword arguments passing to makeBox
 
     """
-    if thickness*2  > width or thickness*2 > height or bottom_thickness < tall:
-        print("Parameters do not match.")
-        if rawShape:
-            sg = cutil.SgGroup()
-            return sg
-        else:
-            sg = cutil.SgPosTransform()
-            ret = sg
-            if wrapped:
-                ret = coordsWrapper(sg, original_object=sg)
-            return ret
+    if thickness is None:
+        thickness = min(width, height) * 0.05
+    else :
+        if thickness*2  > width or thickness*2 > height :
+            print("Parameters do not match.")
+            return None
+
+    if bottom_thickness is None:
+        bottom_thickness = tall * 0.05
+    else :
+        if bottom_thickness > tall:
+            print("Parameters do not match.")
+            return None
+
     wall0 = makeBox(width, thickness, tall, **kwargs).translate(npa([0,  height*0.5, tall*0.5]))
     wall1 = makeBox(width, thickness, tall, **kwargs).translate(npa([0, -height*0.5, tall*0.5]))
     wall2 = makeBox(thickness, height - thickness, tall, **kwargs).translate(npa([ 0.5*(width- thickness), 0, tall*0.5]))
