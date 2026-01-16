@@ -374,9 +374,12 @@ class IKWrapper(object):
             constraint (str or list[float], optional) : '6D', 'position', 'rotation', 'xyzRPY'
             weight (float, default = 1.0) : weight of constraint
             base_type (str or list[float], optional) : '2D', 'planer', 'position', 'rotation'
-            base_weight (float, default = 1.0) : weight of base movement
+            base_weight (float, default = 1.0) : weight of base movement (evaluation phase)
+            base_dq_weight (float, default = 0.01) : weight of velocity of base movement
+            joint_dq_weight (list[float], optional) : weight of velocity of joints (list length should be the same as num of joints)
             max_iteration (int, defulat = 32) : number of iteration
             threshold (float, default = 5e-5) : threshold for checking convergence
+            position_precision( list[float], optional) : precision of position. [prec_x, prec_y, prec_z, prec_R, prec_P, prec_Y]
             add_noise (float or boolean, optional) : if True or number, adding noise to angle of joint before solving IK
             debug (boolean, default = False) : if True, printing debug message
 
@@ -405,7 +408,8 @@ class IKWrapper(object):
         return (succ, _total)
 
     def __inverseKinematicsQP(self, target, constraint = None, weight = 1.0, add_noise = None, debug = False,
-                              base_type = None, base_weight = 1.0, base_dq_weight = 0.01, max_iteration = 32, threshold = 5e-5, threshold_we = 5e-5, position_precision = None,
+                              base_type = None, base_weight = 1.0, base_dq_weight = 0.01, joint_dq_weight = None,
+                              max_iteration = 32, threshold = 5e-5, threshold_we = 5e-5, position_precision = None,
                               use_joint_limit=True, joint_limit_max_error=1e-2, joint_limit_precision=0.1, **kwargs):
         ## default position precision // 1e-4, 1e-4, 1e-4, 0.001745, 0.001745, 0.001745;
         ## add_noise
@@ -513,7 +517,10 @@ class IKWrapper(object):
             variables.append(self.__robot.rootLink)
             dqweight += [ base_dq_weight ] * 6
         variables += self.__current_joints
-        dqweight += [1.0] * len(self.__current_joints)
+        if joint_dq_weight is None:
+            dqweight += [1.0] * len(self.__current_joints)
+        else:
+            dqweight += list(joint_dq_weight)
         if debug:
             print('var: {}'.format(variables))
             print('dqw: {}'.format(dqweight))
