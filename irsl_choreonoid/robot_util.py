@@ -1411,7 +1411,7 @@ class RobotModelWrapped(coordsWrapper): ## with wrapper
         """List of joint names
 
         Returns:
-            list [cnoid.Body.Link] : List of joint names
+            list [str] : List of joint names
 
         """
         return list(self.__joint_map.keys())
@@ -1431,7 +1431,7 @@ class RobotModelWrapped(coordsWrapper): ## with wrapper
         """List of device names
 
         Returns:
-            list [cnoid.Body.Device] : List of device names
+            list [str] : List of device names
 
         """
         return list(self.__device_map.keys())
