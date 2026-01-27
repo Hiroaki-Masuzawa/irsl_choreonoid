@@ -300,7 +300,7 @@ Then, you can run some process when the position of the target is updated.
 
         Args:
             ang (float) : angle to rotate [radian]
-            aixs (numpy.array) : 1x3 vector, axis to rotate around
+            axis (numpy.array) : 1x3 vector, axis to rotate around
             wrt (cnoid.IRSLCoords.coordinates.wrt or cnoid.IRSLCoords.coordinates, optional) : Reference coordinates applying this method
 
         Returns:
@@ -319,7 +319,7 @@ Then, you can run some process when the position of the target is updated.
 
         Args:
             ang (float) : angle to rotate [radian]
-            aixs (numpy.array) : 1x3 vector, axis to rotate around
+            axis (numpy.array) : 1x3 vector, axis to rotate around
             wrt (cnoid.IRSLCoords.coordinates.wrt or cnoid.IRSLCoords.coordinates, optional) : Reference coordinates applying this method
 
         Returns:
